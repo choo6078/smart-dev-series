@@ -68,7 +68,7 @@
 # 가상환경 활성화 후
 python study_dash/main.py
 
-실행 시 Tkinter GUI 창이 열리며 “Start / Pause / Reset” 버튼으로 타이머를 제어할 수 있습니다.
+>실행 시 Tkinter GUI 창이 열리며 “Start / Pause / Reset” 버튼으로 타이머를 제어할 수 있습니다.
 
 ---
 
@@ -92,7 +92,7 @@ smart_study_dashboard/
 
 ---
 
-## 👨‍💻 개발자
+## 개발자
 
 | 이름 | 역할 | 학과 |
 |------|------|------|
@@ -100,5 +100,5 @@ smart_study_dashboard/
 
 ---
 
-Smart Study Dashboard는 “스마트한 학습 루틴”을 만드는 첫 걸음입니다.
-추후 SQLite 기반 데이터 저장과 주간 그래프 통계를 통해 사용자의 학습 패턴을 시각화할 예정입니다.
+>Smart Study Dashboard는 “스마트한 학습 루틴”을 만드는 첫 걸음입니다.
+>추후 SQLite 기반 데이터 저장과 주간 그래프 통계를 통해 사용자의 학습 패턴을 시각화할 예정입니다.
