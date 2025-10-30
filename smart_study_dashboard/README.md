@@ -65,9 +65,12 @@
 ---
 
 ## 실행 방법
+``` bash
+
 # 가상환경 활성화 후
 python study_dash/main.py
 
+```
 >실행 시 Tkinter GUI 창이 열리며 “Start / Pause / Reset” 버튼으로 타이머를 제어할 수 있습니다.
 
 ---
