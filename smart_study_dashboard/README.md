@@ -76,6 +76,8 @@ python study_dash/main.py
 ---
 
 ## 디렉토리 구조
+```
+
 smart_study_dashboard/
  ├── study_dash/
  │    ├── main.py
@@ -86,6 +88,8 @@ smart_study_dashboard/
  │    └── test_timer_basic.py
  ├── dev-log.md
  └── README.md
+
+```
 
 ---
 
