@@ -66,3 +66,63 @@
 ### 다음 목표 (W2)
 - SQLite 연동 및 학습 세션 저장 기능 구현  
 - 세션 시작/종료/지속시간 기록 및 DB 관리 구조 설계
+
+## W2 진행 로그 (2025-10-31)
+
+### 구현 개요
+- **SQLite 연동 및 학습 세션 저장 기능 구현 (DB 연동 완료)**
+- 타이머 종료 시 세션 데이터를 자동으로 **DB에 기록**하도록 연결
+- DB 접근 전용 모듈(`db_service.py`) 분리로 **데이터 관리 책임 분리**
+- `pytest`를 통한 CRUD 및 주간 합계(`fetch_daily_totals`) 검증 완료
+
+---
+
+### 주요 구현 내용
+- **`db_service.py` 모듈 신규 작성**
+  - `init_db()` : `data/study_data.db` 자동 생성 및 `sessions` 테이블 구조 정의
+  - `insert_session()` : 세션 1건 저장 (날짜, 공부시간, 작업명, 카테고리)
+  - `fetch_sessions()` : 날짜 조건 기반 세션 목록 조회
+  - `fetch_daily_totals()` : 주간 그래프용 일자별 공부 시간 합계 반환
+  - `row_factory` 설정으로 결과를 **딕셔너리처럼 컬럼명 접근 가능**하게 구성
+- **`PomodoroTimer` 클래스 수정**
+  - 타이머 종료(`Time’s up!`) 시 DB 자동 저장 로직 추가
+  - `session_duration` 속성 도입 → 남은 시간이 아닌 **실제 세션 시간(초)** 저장
+  - DB 연동 시 예외 발생 방지용 try/except 구조 적용 (선택적으로 반영 가능)
+- **테스트 코드 강화 (`tests/test_db_service.py`)**
+  - 임시 디렉토리(`tmp_path`)에 테스트 DB 생성해 프로덕션 DB 오염 방지
+  - CRUD + 주간 집계 로직 단위 테스트 통과
+  - `ModuleNotFoundError: db_service` → 상대 임포트(`from .db_service import ...`)로 해결
+
+---
+
+### 학습 및 성장 과정
+- **SQLite 구조와 연결 원리 완전 이해**
+  - `_connect()` = “DB 문 열고 들어간 상태”, `commit()` = “변경을 실제 파일에 반영”
+  - `with _connect() as conn:` 구문이 자동으로 문을 닫아준다는 점을 배움
+  - `conn.row_factory = sqlite3.Row`로 Row 객체를 컬럼명 기반으로 접근 가능하게 만드는 원리 숙지
+- **SQL 테이블 정의 문법 이해**
+  - `CREATE TABLE IF NOT EXISTS sessions (...)` 구문 분석을 통해 `id`, `date`, `duration_sec`, `task`, `category` 컬럼 구조를 정확히 파악
+  - `INTEGER PRIMARY KEY AUTOINCREMENT`의 자동 증가 원리까지 이해함
+- **조건 쿼리(query, conds, params)의 동작 구조 파악**
+  - SQL 문자열을 유연하게 조립(`SELECT * FROM sessions WHERE ...`)하는 방식 이해
+  - `params`를 사용해 안전한 쿼리 실행(SQL Injection 방지)을 학습
+- **DB 트랜잭션 및 커넥션의 생명주기 이해**
+  - 커넥트를 반환(return)하면 열린 연결이 유지되지만, `with` 블록은 자동으로 닫힘을 체감
+  - “DB 문을 열고 들어가서 작업 후 닫는다”는 개념으로 정리
+
+---
+
+### 기술적 인사이트
+- **Tkinter + SQLite 연동 구조 확립**
+  - 타이머 → 세션 저장 → DB → 그래프 시각화(W3 예정)로 이어지는 데이터 흐름 완성
+- **안전한 SQL 실행 패턴 학습**
+  - `params` 리스트 활용한 안전한 실행 (`?` placeholder)
+- **pytest의 실질적 효용성 체감**
+  - 단순 성공 테스트가 아니라 “DB 동작이 의도대로 작동하는지” 보장하는 수단으로 인식
+- **객체지향과 모듈화**
+  - UI 로직과 DB 로직을 분리해 유지보수성과 확장성을 높임
+
+### 다음 목표 (W3)
+- DB에 저장된 세션 데이터를 기반으로 **matplotlib 주간 그래프 시각화 기능 구현**
+- `fetch_daily_totals()` 결과를 이용해 요일별 공부시간 막대그래프 표시
+- 누적 공부시간 및 일별 합계 표시 UI 추가 예정

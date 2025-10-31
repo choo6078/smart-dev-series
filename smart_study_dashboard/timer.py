@@ -1,12 +1,15 @@
 import tkinter as tk
 import time
+from .db_service import insert_session
+from datetime import datetime
 
 class PomodoroTimer:
-    def __init__(self, root: tk.Tk, minutes: int = 25):
+    def __init__(self, root: tk.Tk, minutes: int = 1):
         self.root = root
         self.is_running = False
         self.total_seconds = minutes * 60
         self.time_left = self.total_seconds
+        self.sessions_duration = self.total_seconds
         self._tick_job = None
 
         self.label = None
@@ -54,6 +57,12 @@ class PomodoroTimer:
             self.label.config(text="Time's up!")
             self.is_running = False
             self._tick_job = None
+
+            today = datetime.now().strftime("%Y-%m-%d")
+
+            elapsed = self.sessions_duration - self.time_left
+            insert_session(today, max(elapsed, 0), task="집중 세션", category="공부")
+            print("[DB] 공부 기록 저장 완료")
 
     def start_timer(self):
         if self.is_running:
